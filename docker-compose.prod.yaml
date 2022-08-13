@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  pokedexapp:
+    image: pokedex-docker
+    container_name: pokedexapp
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    restart: always # reiniciar el contenedor si se detiene
+    ports:
+      - "${PORT}:${PORT}"
+    # working_dir: /var/www/pokedex
+    environment:
+      MONGO_DB: ${MONGO_DB}
+      PORT: ${PORT}
+    # volumes:
+    #   - ./:/var/www/pokedex
+
+  db:
+    image: mongo:5.0
+    container_name: mongo-poke
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGODB_DATABASE: nest-pokemon
+    volumes:
+      - ./mongo:/data/db
+
+# # BUILD
+# docker-compose -f docker-compose.prod.yaml --env-file .env.prod up --build
+# # RUN
+# docker-compose -f docker-compose.prod.yaml --env-file .env.prod up
